@@ -2,7 +2,7 @@ import tkinter as tk
 import random
 
 def generar_numeros():
-    global num1, num2, respuesta_correcta, operacion
+    global num1, num2, respuesta_correcta, operacion, tiempo_restante
     operacion = random.choice(["+", "-", "*", "/"])
     
     if operacion == "+":
@@ -28,10 +28,23 @@ def generar_numeros():
     boton_opcion1.config(text=opciones[0], command=lambda: verificar_respuesta(opciones[0]))
     boton_opcion2.config(text=opciones[1], command=lambda: verificar_respuesta(opciones[1]))
     boton_opcion3.config(text=opciones[2], command=lambda: verificar_respuesta(opciones[2]))
+    label_resultado.config(text="")
+    tiempo_restante = 10
+    actualizar_tiempo()
 
 def verificar_respuesta(respuesta):
     if respuesta == respuesta_correcta:
         label_resultado.config(text="Correcto", fg="green")
+    else:
+        label_resultado.config(text="Incorrecto", fg="red")
+    ventana.after_cancel(timer)
+
+def actualizar_tiempo():
+    global tiempo_restante, timer
+    if tiempo_restante > 0:
+        label_tiempo.config(text=f"Tiempo restante: {tiempo_restante} segundos")
+        tiempo_restante -= 1
+        timer = ventana.after(1000, actualizar_tiempo)
     else:
         label_resultado.config(text="Incorrecto", fg="red")
 
@@ -54,6 +67,9 @@ boton_opcion3.pack(pady=10)
 
 label_resultado = tk.Label(ventana, text="", font=("Arial", 18), bg="black", fg="white")
 label_resultado.pack(pady=20)
+
+label_tiempo = tk.Label(ventana, text="", font=("Arial", 18), bg="black", fg="white")
+label_tiempo.pack(pady=20)
 
 boton_generar = tk.Button(ventana, text="Generar Números", command=generar_numeros, font=("Arial", 18), bg="gray", fg="white")
 boton_generar.pack(pady=20)
